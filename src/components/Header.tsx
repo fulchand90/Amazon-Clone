@@ -1,3 +1,5 @@
+// src/components/Header.tsx
+'use client';
 import { logo } from "@/assets";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,12 +8,14 @@ import HeaderBottom from "./HeaderBottom";
 import SignInButton from "./SignInButton";
 import SearchInput from "./SearchInput";
 import SignOutButton from "./SignOutButton";
-import { getSession } from "../hooks";
+import { useAuth } from "@/utils/hooks/useAuth";
 import CartButton from "./CartButton";
 import FavoriteButton from "./FavoriteButton";
 
-const Header = async () => {
-  const session = await getSession();
+const Header = () => {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) return <div>Loading...</div>; // Optional loading state
 
   return (
     <header className="bg-transparent sticky top-0 z-50">
@@ -38,7 +42,7 @@ const Header = async () => {
           </div>
           <SearchInput />
 
-          {session?.user ? <SignOutButton /> : <SignInButton />}
+          {user ? <SignOutButton /> : <SignInButton />}
 
           {/* Favorite */}
           <FavoriteButton />

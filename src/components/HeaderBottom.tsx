@@ -1,9 +1,14 @@
-import { signOut } from "@/auth";
+// src/components/HeaderBottom.tsx
+'use client';
 import { MdMenu } from "react-icons/md";
-import { getSession } from "../hooks";
+import { useAuth } from "@/utils/hooks/useAuth";
 
-const HeaderBottom = async () => {
-  const session = await getSession();
+const HeaderBottom = () => {
+  const { user, signOut } = useAuth();
+
+  const handleSignOut = () => {
+    signOut();
+  };
 
   return (
     <div className="bg-amazonLight text-white/80">
@@ -17,19 +22,12 @@ const HeaderBottom = async () => {
         <p className="link hidden lg:inline-flex">Registry</p>
         <p className="link hidden lg:inline-flex">Gift Cards</p>
         <p className="link hidden lg:inline-flex">Sell</p>
-        {session && (
-          <form
-            action={async () => {
-              "use server";
-              await signOut();
-            }}
-          >
-            <button type="submit" className="link">
-              Log out
-            </button>
-          </form>
+        {user && (
+          <button onClick={handleSignOut} className="link">
+            Log out
+          </button>
         )}
-        {!session && (
+        {!user && (
           <p className="text-amazonYellowDark tracking-wide underline underline-offset-2 decoration-[1px]">
             please signin to access your cart!
           </p>

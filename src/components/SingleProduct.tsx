@@ -82,10 +82,13 @@ const SingleProduct = ({ product }: { product: Product }) => {
           ))}
         </p>
 
+          <div className=" rounded-md uppercase font-semibold">
+
         <AddToCartBtn
           product={product}
-          className=" rounded-md uppercase font-semibold"
+          
         />
+          </div>
 
         <div className="bg-[#f7f7f7] p-5 rounded-md flex flex-col items-center justify-center gap-2">
           <Image

@@ -32,7 +32,7 @@ const SearchInput = () => {
       item?.title.toLocaleLowerCase().includes(searchQuery.toLowerCase())
     );
     setFilteredProducts(filtered);
-  }, [searchQuery]);
+  }, [searchQuery, products]);
   // Effect to detect click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

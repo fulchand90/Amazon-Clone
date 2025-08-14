@@ -35,6 +35,7 @@ const CarouselBanner = () => {
             alt="bannerOne"
             width={1920}
             height={1080}
+            priority 
           />
         ))}
       </div>

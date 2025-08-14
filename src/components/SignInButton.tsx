@@ -1,25 +1,21 @@
-import { signIn } from "@/auth";
-import React from "react";
-import { BiCaretDown } from "react-icons/bi";
+// components/SignInButton.tsx
+'use client';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
-const SignInButton = () => {
+const SignInButton: React.FC = () => {
   return (
-    <form
-      action={async () => {
-        "use server";
-        await signIn("google", { redirectTo: "/" });
-      }}
-      className="text-xs text-gray-100 flex flex-col justify-center px-2 border border-transparent hover:border-white cursor-pointer duration-300 h-[70%]"
+    <Link 
+      href="/signin" 
+      className="headerItem"
     >
-      <p>Hello, sign in</p>
-      <button type="submit" className="text-white font-bold flex items-center">
-        Account & Lists{" "}
-        <span>
-          <BiCaretDown />
-        </span>
-      </button>
-    </form>
+      <div className="text-xs">
+        <p>Hello, sign in</p>
+        <p className="text-white font-bold">Account & Lists</p>
+      </div>
+    </Link>
   );
 };
 
 export default SignInButton;
+
