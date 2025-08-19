@@ -1,3 +1,4 @@
+"use client"
 import { Product } from "@/type";
 import { FaRegEye } from "react-icons/fa";
 import { MdStar } from "react-icons/md";
