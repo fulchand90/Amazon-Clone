@@ -10,26 +10,40 @@ import PriceTag from "./PrictTag";
 import ProductImage from "./ProductImage";
 
 const SingleProduct = ({ product }: { product: Product }) => {
+  // ✅ Safety check - return loading state if no product
+  if (!product) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+        <div className="h-72 bg-gray-200 animate-pulse rounded-md"></div>
+        <div className="flex flex-col gap-4">
+          <div className="h-8 bg-gray-200 animate-pulse rounded-md"></div>
+          <div className="h-6 bg-gray-200 animate-pulse rounded-md w-1/2"></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
       {/* Product Image */}
       <ProductImage product={product} />
       {/* Product Details */}
       <div className="flex flex-col gap-4">
-        <h2 className="text-3xl font-bold">{product?.title}</h2>
+        <h2 className="text-3xl font-bold">{product?.title || 'Product Title'}</h2>
         <div className="flex items-center justify-between">
           <PriceTag
-            regularPrice={product?.price + product?.discountPercentage / 100}
+            regularPrice={(product?.price || 0) + (product?.discountPercentage || 0) / 100}
             className="text-xl"
-            discountedPrice={product?.price - product?.discountPercentage / 100}
+            discountedPrice={(product?.price || 0) - (product?.discountPercentage || 0) / 100}
           />
           <div className="flex items-center gap-1">
             <div className="text-base text-lightText flex items-center">
               {Array?.from({ length: 5 })?.map((_, index) => {
-                const filled = index + 1 <= Math.floor(product?.rating);
+                const rating = product?.rating || 0;
+                const filled = index + 1 <= Math.floor(rating);
                 const halfFilled =
-                  index + 1 > Math.floor(product?.rating) &&
-                  index < Math.ceil(product?.rating);
+                  index + 1 > Math.floor(rating) &&
+                  index < Math.ceil(rating);
 
                 return (
                   <MdStar
@@ -45,7 +59,7 @@ const SingleProduct = ({ product }: { product: Product }) => {
                 );
               })}
             </div>
-            <p className="text-base font-semibold">{`(${product?.rating?.toFixed(
+            <p className="text-base font-semibold">{`(${(product?.rating || 0).toFixed(
               1
             )} reviews)`}</p>
           </div>
@@ -58,38 +72,38 @@ const SingleProduct = ({ product }: { product: Product }) => {
         <p>
           You are saving{" "}
           <span className="text-base font-semibold text-green-500">
-            <PriceFormat amount={product?.discountPercentage / 100} />
+            <PriceFormat amount={(product?.discountPercentage || 0) / 100} />
           </span>{" "}
           upon purchase
         </p>
         <div>
-          <p className="text-sm tracking-wide">{product?.description}</p>
-          <p className="text-base">{product?.warrantyInformation}</p>
+          <p className="text-sm tracking-wide">{product?.description || ''}</p>
+          <p className="text-base">{product?.warrantyInformation || ''}</p>
         </div>
         <p>
-          Brand: <span className="font-medium">{product?.brand}</span>
+          Brand: <span className="font-medium">{product?.brand || 'Unknown'}</span>
         </p>
         <p>
           Category:{" "}
-          <span className="font-medium capitalize">{product?.category}</span>
+          <span className="font-medium capitalize">{product?.category || 'General'}</span>
         </p>
         <p>
           Tags:{" "}
-          {product?.tags?.map((item, index) => (
-            <span key={index} className="font-medium capitalize">
-              {item}
-              {index < product?.tags?.length - 1 && ", "}
-            </span>
-          ))}
+          {product?.tags && product.tags.length > 0 ? (
+            product.tags.map((item, index) => (
+              <span key={index} className="font-medium capitalize">
+                {item}
+                {index < product.tags.length - 1 && ", "}
+              </span>
+            ))
+          ) : (
+            <span className="font-medium text-gray-500">No tags available</span>
+          )}
         </p>
 
-          <div className=" rounded-md uppercase font-semibold">
-
-        <AddToCartBtn
-          product={product}
-          
-        />
-          </div>
+        <div className=" rounded-md uppercase font-semibold">
+          <AddToCartBtn product={product} />
+        </div>
 
         <div className="bg-[#f7f7f7] p-5 rounded-md flex flex-col items-center justify-center gap-2">
           <Image
@@ -102,32 +116,38 @@ const SingleProduct = ({ product }: { product: Product }) => {
       </div>
       {/* Reviews */}
       <div className="p-10 bg-[#f7f7f7] col-span-2 flex items-center flex-wrap gap-10">
-        {product?.reviews?.map((item,index) => (
-          <div
-            key={`${item?.reviewerName}-${index}`}
-            className="bg-white/80 p-5 border-[1px] border-amazonOrangeDark/50 rounded-md hover:border-amazonOrangeDark hover:bg-white duration-200 flex flex-col gap-1"
-          >
-            <p className="text-base font-semibold">{item?.comment}</p>
-            <div className="text-xs">
-              <p className="font-semibold">{item?.reviewerName}</p>
-              <p className="">{item?.reviewerEmail}</p>
-            </div>
-            <div className="flex items-center">
+        {product?.reviews && product.reviews.length > 0 ? (
+          product.reviews.map((item, index) => (
+            <div
+              key={`${item?.reviewerName || 'anonymous'}-${index}`}
+              className="bg-white/80 p-5 border-[1px] border-amazonOrangeDark/50 rounded-md hover:border-amazonOrangeDark hover:bg-white duration-200 flex flex-col gap-1"
+            >
+              <p className="text-base font-semibold">{item?.comment || 'No comment'}</p>
+              <div className="text-xs">
+                <p className="font-semibold">{item?.reviewerName || 'Anonymous'}</p>
+                <p className="">{item?.reviewerEmail || ''}</p>
+              </div>
               <div className="flex items-center">
-                {Array?.from({ length: 5 })?.map((_, index) => (
-                  <MdStar
-                    key={index}
-                    className={`${
-                      index < item?.rating
-                        ? "text-yellow-500"
-                        : "text-lightText"
-                    }`}
-                  />
-                ))}
+                <div className="flex items-center">
+                  {Array?.from({ length: 5 })?.map((_, starIndex) => (
+                    <MdStar
+                      key={starIndex}
+                      className={`${
+                        starIndex < (item?.rating || 0)
+                          ? "text-yellow-500"
+                          : "text-lightText"
+                      }`}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
+          ))
+        ) : (
+          <div className="bg-white/80 p-5 border-[1px] border-amazonOrangeDark/50 rounded-md">
+            <p className="text-base font-semibold text-gray-500">No reviews available</p>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
