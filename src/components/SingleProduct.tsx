@@ -101,9 +101,9 @@ const SingleProduct = ({ product }: { product: Product }) => {
       </div>
       {/* Reviews */}
       <div className="p-10 bg-[#f7f7f7] col-span-2 flex items-center flex-wrap gap-10">
-        {product?.reviews?.map((item) => (
+        {product?.reviews?.map((item,index) => (
           <div
-            key={item?.reviewerName}
+            key={`${item?.reviewerName}-${index}`}
             className="bg-white/80 p-5 border-[1px] border-amazonOrangeDark/50 rounded-md hover:border-amazonOrangeDark hover:bg-white duration-200 flex flex-col gap-1"
           >
             <p className="text-base font-semibold">{item?.comment}</p>
